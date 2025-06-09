@@ -1,0 +1,1 @@
+Ce dossier peut contenir des fichiers publics statiques accessibles directement (favicon, robots.txt, etc.). 

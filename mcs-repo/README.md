@@ -1,0 +1,1 @@
+Ce dossier peut contenir la configuration ou les scripts spécifiques à l'intégration MCS. 

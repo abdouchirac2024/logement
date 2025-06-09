@@ -1,0 +1,1 @@
+Ce dossier contient les ressources statiques (images, polices, etc.) utilisées par l'application. 

@@ -1,0 +1,1 @@
+Ce dossier contient les composants, services et modules partagés entre plusieurs features de l'application. 

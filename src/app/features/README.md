@@ -1,0 +1,1 @@
+Ce dossier regroupe toutes les features (fonctionnalités) de l'application, organisées par domaine métier. 
