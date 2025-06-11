@@ -2,14 +2,14 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { AppComponent } from './app.component';
-import { HomeComponent } from './features/home/home.component';
+// import { AppComponent } from './app.component'; // Removed as AppComponent is now standalone
+// import { HomeComponent } from './features/home/home.component'; // Removed as HomeComponent is now standalone
 import { appRoutes } from './app.routes';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    HomeComponent
+    // AppComponent, // Removed
+    // HomeComponent // Removed
   ],
   imports: [
     BrowserModule,
@@ -17,6 +17,6 @@ import { appRoutes } from './app.routes';
     HttpClientModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  // bootstrap: [AppComponent] // Removed
 })
 export class AppModule { } 

@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Title, Meta } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   template: `
     <div class="min-h-screen bg-gray-100">
       <div class="container mx-auto px-4 py-16">
@@ -31,7 +35,7 @@ import { Title, Meta } from '@angular/platform-browser';
               <div class="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
                 <h3 class="text-xl font-semibold text-gray-900 mb-3">Backend</h3>
                 <p class="text-gray-600">Powered by Laravel API</p>
-                <button class="btn btn-secondary mt-4">Explore API</button>
+                <button class="btn btn-secondary mt-4" routerLink="/login">Connect</button>
               </div>
             </div>
           </div>
