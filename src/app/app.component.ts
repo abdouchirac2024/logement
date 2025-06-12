@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { RouterOutlet, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -7,9 +7,12 @@ import { RouterOutlet } from '@angular/router';
   imports: [RouterOutlet],
   template: `
     <router-outlet></router-outlet>
-  `,
-  styles: []
+  `
 })
-export class AppComponent {
-  title = 'locato';
+export class AppComponent implements OnInit {
+  private readonly router = inject(Router);
+
+  ngOnInit(): void {
+    // La logique de navigation peut être ajoutée ici si nécessaire
+  }
 }

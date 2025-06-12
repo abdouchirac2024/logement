@@ -1,43 +1,130 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, RouterLink],
-  template: `
-    <div class="flex justify-center items-center h-screen bg-gray-100">
-      <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
-        <form>
-          <div class="mb-4">
-            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-            <input type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Email">
-          </div>
-          <div class="mb-6">
-            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-            <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" placeholder="********">
-          </div>
-          <div class="flex items-center justify-between">
-            <button type="submit" class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" (click)="onLogin()">
-              Sign In
-            </button>
-            <a class="inline-block align-baseline font-bold text-sm text-red-700 hover:text-red-800" routerLink="/signup">
-              Don't have an account? Sign Up
-            </a>
-          </div>
-        </form>
-      </div>
-    </div>
-  `,
-  styles: []
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
-  constructor(private router: Router) { }
+export class LoginComponent implements OnInit, OnDestroy {
+  loginForm: FormGroup;
+  isLoading = false;
+  showPassword = false;
+  currentSlide = 0;
+  private slideInterval: any;
 
-  onLogin() {
-    // Simulate successful login, in a real app you'd have authentication logic here
-    this.router.navigate(['/dashboard']);
+  constructor(
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]] 
+    });
   }
-} 
+
+  ngOnInit() {
+    this.slideInterval = setInterval(() => {
+      this.nextSlide();
+    }, 4000);
+  }
+
+  ngOnDestroy() {
+    if (this.slideInterval) {
+      clearInterval(this.slideInterval);
+    }
+  }
+
+  nextSlide() {
+    this.currentSlide = (this.currentSlide + 1) % 3;
+  }
+
+  goToSlide(index: number) {
+    this.currentSlide = index;
+    if (this.slideInterval) {
+      clearInterval(this.slideInterval);
+      this.slideInterval = setInterval(() => {
+        this.nextSlide();
+      }, 4000);
+    }
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  private showToast(icon: 'success' | 'error', title: string) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 4000,
+      timerProgressBar: true,
+      customClass: {
+        popup: 'custom-toast',
+        title: 'custom-toast-title',
+        icon: 'custom-toast-icon',
+        timerProgressBar: 'custom-toast-progress'
+      },
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      },
+      showClass: {
+        popup: 'animate__animated animate__fadeInRight'
+      },
+      hideClass: {
+        popup: 'animate__animated animate__fadeOutRight'
+      },
+      background: icon === 'success' ? '#10B981' : '#E0252C',
+      color: '#ffffff',
+      iconColor: '#ffffff',
+      padding: '1rem 1.5rem'
+    });
+
+    Toast.fire({
+      icon: icon,
+      title: title
+    });
+  }
+
+  async onSubmit() {
+    try {
+      if (this.loginForm.invalid) {
+        this.loginForm.markAllAsTouched();
+        this.showToast('error', 'Veuillez remplir correctement tous les champs');
+        return;
+      }
+
+      this.isLoading = true;
+      console.log('Connexion en cours avec:', this.loginForm.value);
+      
+      // Simuler un appel API
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Simuler une connexion réussie ou échouée (à remplacer par votre vraie logique d'authentification)
+      const isSuccess = Math.random() > 0.5; // Pour tester, on simule un succès ou échec aléatoire
+      
+      if (isSuccess) {
+        this.showToast('success', 'Connexion réussie !');
+        console.log('Connexion réussie !');
+        // Attendre que le toast soit visible avant la redirection
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']);
+        }, 1000);
+      } else {
+        throw new Error('Email ou mot de passe incorrect');
+      }
+    } catch (error) {
+      this.showToast('error', error instanceof Error ? error.message : 'Une erreur est survenue lors de la connexion');
+      console.error('Erreur de connexion:', error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+}

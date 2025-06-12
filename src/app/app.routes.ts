@@ -4,12 +4,22 @@ import { LoginComponent } from './features/auth/login.component';
 import { SignupComponent } from './features/auth/signup.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { DashboardLayoutComponent } from './layout/dashboard-layout/dashboard-layout.component';
+import { VerificationComponent } from './features/auth/verification.component';
+import { ForgotPasswordComponent } from './features/auth/forgot';
+import { ResetPasswordComponent } from './features/auth/resetpassword.component';
 
 export const appRoutes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { 
+    path: '', 
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'verification', component: VerificationComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'resetpassword', component: ResetPasswordComponent },
   { 
     path: 'dashboard',
     component: DashboardLayoutComponent,
@@ -19,5 +29,5 @@ export const appRoutes: Routes = [
     ]
   },
   // Wildcard route for any other unknown paths
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: 'home' }
 ]; 
