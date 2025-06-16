@@ -1,0 +1,119 @@
+<div class="min-h-screen bg-white flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-red-500 to-orange-500 p-8 text-center">
+            <div class="flex items-center justify-center mx-auto mb-6">
+
+                <img src="assets/image/logo/Logo.png" alt="Locato Logo"
+                    class="w-16 h-16 object-contain drop-shadow-lg transition-transform duration-300 hover:rotate-6 hover:scale-110" />
+
+                <!-- <img src="assets/iconelocato.png" alt="Locato Logo" class="w-20 h-20 object-contain" /> -->
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-3">Mot de passe oublié</h1>
+            <p class="text-white text-base opacity-90">
+                Entrez votre email ou numéro de téléphone pour réinitialiser votre mot de passe
+            </p>
+        </div>
+
+        <form [formGroup]="forgotForm" (ngSubmit)="onSubmit()" class="p-8">
+            <div class="space-y-8">
+                <!-- Switch Email/Téléphone -->
+                <div class="flex justify-center space-x-4 mb-6">
+                    <button type="button" (click)="switchToEmail()" [class.bg-red-500]="verificationType === 'email'"
+                        [class.text-white]="verificationType === 'email'"
+                        [class.bg-gray-100]="verificationType !== 'email'"
+                        [class.text-gray-600]="verificationType !== 'email'"
+                        class="px-6 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span>Email</span>
+                    </button>
+                    <button type="button" (click)="switchToPhone()" [class.bg-red-500]="verificationType === 'phone'"
+                        [class.text-white]="verificationType === 'phone'"
+                        [class.bg-gray-100]="verificationType !== 'phone'"
+                        [class.text-gray-600]="verificationType !== 'phone'"
+                        class="px-6 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                        <span>Téléphone</span>
+                    </button>
+                </div>
+
+                <!-- Champ de saisie -->
+                <div class="space-y-2">
+                    <label [for]="verificationType" class="block text-sm font-medium text-gray-700">
+                        {{ verificationType === 'email' ? 'Adresse email' : 'Numéro de téléphone' }}
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg *ngIf="verificationType === 'email'" class="h-5 w-5 text-gray-400"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <svg *ngIf="verificationType === 'phone'" class="h-5 w-5 text-gray-400"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                        </div>
+                        <input [type]="verificationType === 'email' ? 'email' : 'tel'" [id]="verificationType"
+                            formControlName="login"
+                            [placeholder]="verificationType === 'email' ? 'exemple@email.com' : '6XXXXXXXX'"
+                            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                            [class.border-red-500]="forgotForm.get('login')?.invalid && forgotForm.get('login')?.touched">
+                    </div>
+                    <div *ngIf="forgotForm.get('login')?.invalid && forgotForm.get('login')?.touched"
+                        class="text-red-500 text-sm mt-1">
+                        <span *ngIf="forgotForm.get('login')?.errors?.['required']">
+                            Ce champ est requis
+                        </span>
+                        <span *ngIf="forgotForm.get('login')?.errors?.['email'] && verificationType === 'email'">
+                            Veuillez entrer une adresse email valide
+                        </span>
+                        <span *ngIf="forgotForm.get('login')?.errors?.['pattern'] && verificationType === 'phone'">
+                            Veuillez entrer un numéro de téléphone valide
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Bouton de soumission -->
+                <div>
+                    <button type="submit" [disabled]="isLoading"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+                        <svg *ngIf="isLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        {{ isLoading ? 'Envoi en cours...' : 'Envoyer le lien de réinitialisation' }}
+                    </button>
+                </div>
+
+                <!-- Lien de retour -->
+                <div class="text-center">
+                    <a routerLink="/login" class="text-red-500 hover:text-red-600">
+                        <span class="flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Retour à la connexion
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

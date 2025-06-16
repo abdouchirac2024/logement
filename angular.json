@@ -18,14 +18,17 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
-  "src/favicon.ico",
-  "src/assets",
-  "src/public"
-],
+              "src/favicon.ico",
+              "src/assets",
+              "src/public"
+            ],
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "sweetalert2"
+            ]
           }
         },
         "serve": {
@@ -40,4 +43,4 @@
   "cli": {
     "analytics": "0620ad06-1e6e-45ed-b9ff-f6dd37562d0d"
   }
-} 
+}

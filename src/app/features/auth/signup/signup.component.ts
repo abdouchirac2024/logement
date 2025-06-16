@@ -8,9 +8,18 @@ import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TextPlugin } from 'gsap/TextPlugin';
+import { HttpClient } from '@angular/common/http';
+import { catchError, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+interface RegisterResponse {
+  message: string;
+  token?: string;
+  user?: any;
+}
 
 @Component({
   selector: 'app-signup',
@@ -572,6 +581,8 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
   showConfirmPassword = false;
   passwordStrength: 'weak' | 'medium' | 'strong' = 'weak';
   passwordStrengthPercentage = 0;
+  private apiUrl = 'https://accentprojets.cm/public/api';
+  isLoading = false;
 
   // Three.js variables
   private scene!: THREE.Scene;
@@ -584,7 +595,8 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
     private fb: FormBuilder,
     private router: Router,
     private toastr: ToastrService,
-    private el: ElementRef
+    private el: ElementRef,
+    private http: HttpClient
   ) {
     this.signupForm = this.fb.group({
       role: ['', Validators.required],
@@ -628,90 +640,90 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
 
   private initThreeJS(): void {
     const container = this.el.nativeElement.querySelector('.absolute.inset-0.z-0');
-    
+
     // Scene
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xf0f0f0);
-    
+
     // Camera
     this.camera = new THREE.PerspectiveCamera(
-      75, 
-      window.innerWidth / window.innerHeight, 
-      0.1, 
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
       1000
     );
     this.camera.position.z = 30;
-    
+
     // Renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(this.renderer.domElement);
-    
+
     // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     this.scene.add(ambientLight);
-    
+
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(1, 1, 1);
     this.scene.add(directionalLight);
-    
+
     // Create floating cubes
     const geometry = new THREE.BoxGeometry(2, 2, 2);
-    const material = new THREE.MeshPhongMaterial({ 
+    const material = new THREE.MeshPhongMaterial({
       color: 0xff6b6b,
       transparent: true,
       opacity: 0.7,
       shininess: 100
     });
-    
+
     for (let i = 0; i < 10; i++) {
       const cube = new THREE.Mesh(geometry, material.clone());
       cube.material.color.setHSL(Math.random(), 0.5, 0.5);
-      
+
       // Random position
       cube.position.x = Math.random() * 40 - 20;
       cube.position.y = Math.random() * 40 - 20;
       cube.position.z = Math.random() * 40 - 20;
-      
+
       // Random rotation
       cube.rotation.x = Math.random() * Math.PI;
       cube.rotation.y = Math.random() * Math.PI;
-      
+
       // Random scale
       const scale = Math.random() * 0.5 + 0.5;
       cube.scale.set(scale, scale, scale);
-      
+
       this.cubes.push(cube);
       this.scene.add(cube);
     }
-    
+
     // Handle window resize
     window.addEventListener('resize', () => {
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(window.innerWidth, window.innerHeight);
     });
-    
+
     // Start animation
     this.animate();
   }
 
   private animate(): void {
     this.animationId = requestAnimationFrame(() => this.animate());
-    
+
     // Rotate cubes
     this.cubes.forEach((cube, i) => {
       cube.rotation.x += 0.01;
       cube.rotation.y += 0.01;
-      
+
       // Float up and down
       cube.position.y += Math.sin(Date.now() * 0.001 + i) * 0.01;
-      
+
       // Pulsate
       const scale = 0.5 + Math.sin(Date.now() * 0.001 + i) * 0.1;
       cube.scale.set(scale, scale, scale);
     });
-    
+
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -720,7 +732,7 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
     const nextButton = this.el.nativeElement.querySelector('#nextButton');
     const submitButton = this.el.nativeElement.querySelector('#submitButton');
     const googleButton = this.el.nativeElement.querySelector('#googleButton');
-    
+
     if (nextButton) {
       gsap.from(nextButton, {
         x: 20,
@@ -730,7 +742,7 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
         ease: "back.out(1.7)"
       });
     }
-    
+
     if (submitButton) {
       gsap.from(submitButton, {
         scale: 0.8,
@@ -740,7 +752,7 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
         ease: "elastic.out(1, 0.5)"
       });
     }
-    
+
     if (googleButton) {
       gsap.from(googleButton, {
         y: 20,
@@ -750,7 +762,7 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
         ease: "power2.out"
       });
     }
-    
+
     // Add hover effects
     const buttons = this.el.nativeElement.querySelectorAll('button');
     buttons.forEach((button: HTMLElement) => {
@@ -761,7 +773,7 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
           ease: "power2.out"
         });
       });
-      
+
       button.addEventListener('mouseleave', () => {
         gsap.to(button, {
           scale: 1,
@@ -778,22 +790,22 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
       this.passwordStrengthPercentage = 0;
       return;
     }
-    
+
     let strength = 0;
-    
+
     // Length
     if (password.length >= 8) strength += 1;
     if (password.length >= 12) strength += 1;
-    
+
     // Contains numbers
     if (/\d/.test(password)) strength += 1;
-    
+
     // Contains special chars
     if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 1;
-    
+
     // Contains both lower and upper case
     if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 1;
-    
+
     // Determine strength level
     if (strength <= 2) {
       this.passwordStrength = 'weak';
@@ -846,11 +858,11 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
       case 1:
         return this.signupForm.get('role')?.valid || false;
       case 2:
-        return ['name', 'prenom', 'email', 'telephone'].every(field => 
+        return ['name', 'prenom', 'email', 'telephone'].every(field =>
           this.signupForm.get(field)?.valid
         );
       case 3:
-        return ['ville_id', 'quartier_id'].every(field => 
+        return ['ville_id', 'quartier_id'].every(field =>
           this.signupForm.get(field)?.valid
         );
       case 4:
@@ -858,13 +870,13 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
         if (role === 'Locataire') {
           return this.signupForm.get('preference')?.valid || false;
         } else if (role === 'Bailleur') {
-          return ['numFiscal', 'description'].every(field => 
+          return ['numFiscal', 'description'].every(field =>
             this.signupForm.get(field)?.valid
           );
         }
         return true;
       case 5:
-        return ['password', 'password_confirmation'].every(field => 
+        return ['password', 'password_confirmation'].every(field =>
           this.signupForm.get(field)?.valid
         ) && this.passwordsMatch();
       default:
@@ -888,8 +900,8 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
           y: -20,
           duration: 0.3,
           onComplete: () => {
-        this.currentStep++;
-            gsap.fromTo(form, 
+            this.currentStep++;
+            gsap.fromTo(form,
               { opacity: 0, y: 20 },
               { opacity: 1, y: 0, duration: 0.3 }
             );
@@ -911,8 +923,8 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
         y: 20,
         duration: 0.3,
         onComplete: () => {
-      this.currentStep--;
-          gsap.fromTo(form, 
+          this.currentStep--;
+          gsap.fromTo(form,
             { opacity: 0, y: -20 },
             { opacity: 1, y: 0, duration: 0.3 }
           );
@@ -947,6 +959,8 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
 
   onSubmit() {
     if (this.signupForm.valid && this.passwordsMatch()) {
+      this.isLoading = true;
+
       // Animation du bouton de soumission
       const submitButton = this.el.nativeElement.querySelector('#submitButton');
       gsap.to(submitButton, {
@@ -955,12 +969,71 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
         yoyo: true,
         repeat: 1,
         onComplete: () => {
-          // Affiche un message de succès
-          this.showToast('success', 'Inscription réussie ! Redirection...');
-          // Redirection vers la page de vérification après 2 secondes
-          setTimeout(() => {
-            this.router.navigate(['/verification']);
-          }, 2000);
+          // Préparation des données d'inscription
+          const formData = {
+            name: this.signupForm.get('name')?.value,
+            prenom: this.signupForm.get('prenom')?.value,
+            email: this.signupForm.get('email')?.value,
+            telephone: this.signupForm.get('telephone')?.value,
+            password: this.signupForm.get('password')?.value,
+            password_confirmation: this.signupForm.get('password_confirmation')?.value,
+            role: this.signupForm.get('role')?.value,
+            quartier_id: parseInt(this.signupForm.get('quartier_id')?.value),
+            ville_id: parseInt(this.signupForm.get('ville_id')?.value)
+          };
+
+          // Ajout des champs spécifiques au rôle
+          if (formData.role === 'Bailleur') {
+            Object.assign(formData, {
+              numFiscal: this.signupForm.get('numFiscal')?.value,
+              description: this.signupForm.get('description')?.value
+            });
+          } else if (formData.role === 'Locataire') {
+            Object.assign(formData, {
+              preference: this.signupForm.get('preference')?.value
+            });
+          }
+
+          // Appel à l'API
+          this.http.post<RegisterResponse>(`${this.apiUrl}/auth/register`, formData)
+            .pipe(
+              catchError(error => {
+                let errorMessage = 'Une erreur est survenue lors de l\'inscription';
+                if (error.error?.message) {
+                  errorMessage = error.error.message;
+                } else if (error.error?.errors) {
+                  // Gestion des erreurs de validation
+                  const errors = error.error.errors;
+                  errorMessage = Object.values(errors).flat().join('\n');
+                }
+                this.showToast('error', errorMessage);
+                return of(null);
+              }),
+              finalize(() => {
+                this.isLoading = false;
+                // Réinitialiser l'animation du bouton
+                gsap.to(submitButton, {
+                  scale: 1,
+                  duration: 0.2
+                });
+              })
+            )
+            .subscribe(response => {
+              if (response) {
+                // Stocker le token si fourni
+                if (response.token) {
+                  localStorage.setItem('token', response.token);
+                }
+
+                // Afficher le message de succès
+                this.showToast('success', 'Inscription réussie ! Redirection...');
+
+                // Redirection vers la page de vérification
+                setTimeout(() => {
+                  this.router.navigate(['/verification']);
+                }, 2000);
+              }
+            });
         }
       });
     } else {

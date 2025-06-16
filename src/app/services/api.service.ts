@@ -6,9 +6,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:8000/api'; // URL de l'API Laravel
+  private apiUrl = 'https://accentprojets.cm/public/api'; // URL de l'API Laravel en ligne 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getData(): Observable<any> {
     return this.http.get(this.apiUrl);

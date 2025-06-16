@@ -203,12 +203,12 @@ export class VerificationComponent implements OnInit {
   isFormValid(): boolean {
     // Vérifier que le champ email/phone est valide selon le type
     const contactValid = this.verificationType === 'email' 
-      ? this.verificationForm.get('email')?.valid 
-      : this.verificationForm.get('phone')?.valid;
+      ? !!this.verificationForm.get('email')?.valid 
+      : !!this.verificationForm.get('phone')?.valid;
     
     // Vérifier que tous les champs de code sont remplis
     const codeValid = this.codeControls.every(control => 
-      this.verificationForm.get(control)?.valid
+      !!this.verificationForm.get(control)?.valid
     );
     
     return contactValid && codeValid;

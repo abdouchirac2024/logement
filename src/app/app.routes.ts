@@ -1,16 +1,17 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
-import { LoginComponent } from './features/auth/login.component';
-import { SignupComponent } from './features/auth/signup.component';
+import { LoginComponent } from './features/auth/login/login.component';
+import { SignupComponent } from './features/auth/signup/signup.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { DashboardLayoutComponent } from './layout/dashboard-layout/dashboard-layout.component';
-import { VerificationComponent } from './features/auth/verification.component';
-import { ForgotPasswordComponent } from './features/auth/forgot';
-import { ResetPasswordComponent } from './features/auth/resetpassword.component';
+import { VerificationComponent } from './features/auth/verification/verification.component';
+import { ForgotPasswordComponent } from './features/auth/forgot/forgot.component';
+import { ResetPasswordComponent } from './features/auth/resetpassword/resetpassword.component';
+import { AuthService } from './core/services/auth.service';
 
 export const appRoutes: Routes = [
-  { 
-    path: '', 
+  {
+    path: '',
     redirectTo: 'home',
     pathMatch: 'full'
   },
@@ -20,7 +21,7 @@ export const appRoutes: Routes = [
   { path: 'verification', component: VerificationComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'resetpassword', component: ResetPasswordComponent },
-  { 
+  {
     path: 'dashboard',
     component: DashboardLayoutComponent,
     children: [
