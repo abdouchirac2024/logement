@@ -1,0 +1,7 @@
+services:
+  - type: static
+    name: angular-frontend
+    env: node
+    buildCommand: npm install && npm run build -- --configuration=production
+    staticPublishPath: dist/angular-frontend
+    pullRequestPreviewsEnabled: true 
