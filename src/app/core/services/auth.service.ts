@@ -113,4 +113,9 @@ export class AuthService {
     register(data: RegisterRequest): Observable<RegisterResponse> {
         return this.http.post<RegisterResponse>(`${this.API_URL}/auth/register`, data);
     }
+
+    getCurrentUser(): Observable<any> {
+        const headers = this.getAuthHeaders();
+        return this.http.get<any>(`${this.API_URL}/auth/user`, { headers });
+    }
 } 
