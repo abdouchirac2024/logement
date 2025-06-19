@@ -1,1 +1,0 @@
-Ce dossier contient les fichiers de configuration d'environnement (dev, prod, etc.). 

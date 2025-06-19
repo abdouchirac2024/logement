@@ -4,6 +4,7 @@ import { RouterLink, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-forgot-password',
@@ -16,7 +17,7 @@ export class ForgotPasswordComponent implements OnInit {
   forgotForm: FormGroup;
   isLoading = false;
   verificationType: 'email' | 'phone' = 'email';
-  private readonly API_URL = 'https://accentprojets.cm/public/api';
+  private readonly API_URL = environment.apiUrl;
 
   constructor(
     private fb: FormBuilder,

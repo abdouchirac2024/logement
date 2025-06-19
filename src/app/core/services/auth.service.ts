@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap, throwError } from 'rxjs';
 import { LoginRequest, LoginResponse, AuthState } from '../models/auth.model';
-import { environment } from '../../../environments/environment';
+import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs/operators';
 
 export interface RegisterRequest {
@@ -30,7 +30,7 @@ export interface RegisterResponse {
     providedIn: 'root'
 })
 export class AuthService {
-    private readonly API_URL = 'https://accentprojets.cm/public/api';
+    private readonly API_URL = environment.apiUrl;
     private authState = new BehaviorSubject<AuthState>({
         isAuthenticated: false,
         token: null,
