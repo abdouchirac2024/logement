@@ -1,0 +1,36 @@
+.container {
+  max-width: 1200px;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Smooth transitions */
+* { // Attention : appliquer ceci globalement peut avoir des impacts sur les performances.
+    // Il est souvent préférable de cibler plus spécifiquement.
+  transition: all 0.2s ease-in-out;
+}
+
+/* Custom scrollbar - Si vous voulez le garder globalement. Sinon, supprimez-le. */
+/*
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+*/

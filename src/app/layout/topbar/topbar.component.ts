@@ -1,141 +1,15 @@
-import { Component, Output, EventEmitter } from '@angular/core'; // Import Output and EventEmitter
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <header class="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
-      <nav class="container mx-auto px-4 lg:px-6 py-3">
-        <div class="flex justify-between items-center">
-          <!-- Logo et titre - Adaptatif -->
-          <div class="flex items-center">
-            <button
-              class="lg:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100 mr-3"
-              (click)="toggleMobileMenu()"
-            >
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      [attr.d]="showMobileMenu ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'">
-                </path>
-              </svg>
-            </button>
-            <img src="assets/image/logo/Logo.png" alt="Locato Logo" class="h-8 sm:h-10 mr-2 sm:mr-4">
-            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 hidden sm:block">Locato</h1>
-          </div>
-
-          <!-- Barre de recherche et actions -->
-          <div class="flex items-center space-x-2 sm:space-x-4">
-            <!-- Barre de recherche - Cachée sur mobile -->
-            <div class="hidden md:flex relative">
-              <input
-                type="text"
-                placeholder="Rechercher..."
-                class="w-64 lg:w-80 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              >
-              <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-              </button>
-            </div>
-
-            <!-- Bouton de recherche mobile -->
-            <button class="md:hidden p-2 text-gray-600 hover:text-red-600 hover:bg-gray-100 rounded-lg">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
-            </button>
-
-            <!-- Actions - Adaptatif -->
-            <div class="flex items-center space-x-1 sm:space-x-2">
-              <!-- Notifications -->
-              <button class="relative p-2 text-gray-600 hover:text-red-600 hover:bg-gray-100 rounded-lg transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                </svg>
-                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
-              </button>
-
-              <!-- Messages -->
-              <button class="relative p-2 text-gray-600 hover:text-red-600 hover:bg-gray-100 rounded-lg transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                </svg>
-                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">8</span>
-              </button>
-
-              <!-- Profil utilisateur -->
-              <div class="flex items-center ml-2 sm:ml-4">
-                <div class="relative">
-                  <button
-                    class="flex items-center space-x-2 sm:space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                    (click)="toggleUserMenu()"
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt="User Avatar"
-                      class="h-8 w-8 sm:h-10 sm:w-10 rounded-full border-2 border-gray-300"
-                    >
-                    <div class="hidden sm:block text-left">
-                      <p class="text-gray-800 text-sm font-semibold">Hery Digi</p>
-                      <p class="text-gray-600 text-xs">Super Admin</p>
-                    </div>
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                  </button>
-
-                  <!-- Menu utilisateur -->
-                  <div
-                    *ngIf="showUserMenu"
-                    class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
-                  >
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mon Profil</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Paramètres</a>
-                    <hr class="my-1">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Déconnexion</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Barre de recherche mobile -->
-        <div class="md:hidden mt-3" *ngIf="showMobileSearch">
-          <div class="relative">
-            <input
-              type="text"
-              placeholder="Rechercher..."
-              class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-            >
-            <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </nav>
-    </header>
-  `,
-  styles: [`
-    .container {
-      max-width: 1200px;
-    }
-
-    @media (max-width: 640px) {
-      .container {
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-    }
-  `]
+  templateUrl: './topbar.component.html', // Modifié
+  styleUrls: ['./topbar.component.scss'] // Modifié
 })
 export class TopbarComponent {
-  @Output() mobileMenuToggle = new EventEmitter<void>(); // Renamed for clarity from (toggleMobileMenu)
+  @Output() mobileMenuToggle = new EventEmitter<void>();
 
   showUserMenu: boolean = false;
   showMobileMenu: boolean = false;
@@ -147,7 +21,7 @@ export class TopbarComponent {
 
   toggleMobileMenu() {
     this.showMobileMenu = !this.showMobileMenu;
-    this.mobileMenuToggle.emit(); // Emit event to parent
+    this.mobileMenuToggle.emit();
   }
 
   toggleMobileSearch() {
